@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hearthmind Leo — Private, Offline Voice Control for Home Assistant</title>
-  <meta name="description" content="Local voice AI for smart-home integrators. 100% offline, zero cloud dependencies, zero recurring fees, with neural Voice ID.">
+  <meta name="description" content="Local voice AI for smart-home integrators. 100% offline, zero cloud dependencies, zero cloud API fees, with neural Voice ID.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='%23111827' stroke='%2338bdf8' stroke-width='1.5' stroke-opacity='0.5'/%3E%3Cpath d='M7.5 9.5v13M13.5 9.5v13M7.5 16h6' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 22.5V9.5l3.5 5.5 3.5-5.5v13' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style>
     :root {
       --bg: #090d16;
@@ -24,6 +25,10 @@
       --badge-text: #38bdf8;
       --dot-green: #10b981;
       --max-width: 1080px;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     * {
@@ -55,7 +60,7 @@
 
     /* Navigation */
     header {
-      padding: 28px 0;
+      padding: 24px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -68,7 +73,7 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-weight: 600;
       font-size: 1.1rem;
       letter-spacing: -0.02em;
@@ -76,14 +81,13 @@
       text-decoration: none;
     }
 
-    .brand-logo {
-      height: 30px;
+    .brand-logo-svg {
       width: 30px;
-      border-radius: 6px;
-      object-fit: cover;
+      height: 30px;
+      flex-shrink: 0;
       display: block;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      border-radius: 7px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
 
     .nav-cta {
@@ -91,7 +95,7 @@
       font-weight: 500;
       color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.15s ease;
+      transition: color 0.15s ease, border-color 0.15s ease;
       border: 1px solid var(--card-border);
       padding: 7px 14px;
       border-radius: 6px;
@@ -148,7 +152,7 @@
       font-size: 1.15rem;
       line-height: 1.6;
       color: var(--text-muted);
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto 36px;
       font-weight: 400;
     }
@@ -167,6 +171,8 @@
       text-decoration: none;
       transition: all 0.15s ease;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 0 20px rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      border: none;
     }
 
     .btn:hover {
@@ -356,7 +362,7 @@
       line-height: 1.4;
     }
 
-    /* CTA Section */
+    /* CTA Section & Pilot Form */
     .cta-section {
       padding: 56px 0 88px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -366,9 +372,9 @@
       background: linear-gradient(180deg, #101726 0%, #0d131f 100%);
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 14px;
-      padding: 48px 36px;
+      padding: 44px 36px;
       text-align: center;
-      max-width: 820px;
+      max-width: 760px;
       margin: 0 auto;
       box-shadow: 0 20px 30px -15px rgba(0, 0, 0, 0.6);
     }
@@ -382,17 +388,154 @@
     }
 
     .cta-copy {
-      font-size: 1rem;
+      font-size: 0.98rem;
       color: var(--text-muted);
       line-height: 1.6;
-      margin-bottom: 28px;
-      max-width: 600px;
+      margin-bottom: 32px;
+      max-width: 620px;
       margin-left: auto;
       margin-right: auto;
     }
 
-    .cta-copy span {
-      display: block;
+    .pilot-form {
+      text-align: left;
+      margin: 0 auto;
+      max-width: 640px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #cbd5e1;
+    }
+
+    .form-group label span.req {
+      color: var(--accent);
+      margin-left: 2px;
+    }
+
+    .form-input,
+    .form-select {
+      background: #090e18;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.92rem;
+      color: #f1f5f9;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+
+    .form-input::placeholder {
+      color: #475569;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      background: #0c1322;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .form-select option {
+      background: #0d1424;
+      color: #f1f5f9;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    .direct-email-note {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    .direct-email-note a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .direct-email-note a:hover {
+      text-decoration: underline;
+      color: #7dd3fc;
+    }
+
+    #form-status {
+      margin-top: 16px;
+      font-size: 0.9rem;
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .alert-error a {
+      color: #fca5a5;
+      text-decoration: underline;
+    }
+
+    .alert-info {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .alert-info a {
+      color: #bae6fd;
+      text-decoration: underline;
     }
 
     /* Footer */
@@ -431,6 +574,10 @@
         padding: 36px 20px;
       }
 
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
       .card {
         padding: 22px;
       }
@@ -444,10 +591,14 @@
     <div class="container">
       <div class="nav-inner">
         <a href="#" class="brand">
-          <img src="./logo.jpg" alt="Hearthmind Logo" class="brand-logo">
+          <svg class="brand-logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="30" height="30" rx="7" fill="#111827" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.5"/>
+            <path d="M7.5 9.5v13M13.5 9.5v13M7.5 16h6" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 22.5V9.5l3.5 5.5 3.5-5.5v13" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           Hearthmind Leo
         </a>
-        <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry" class="nav-cta">
+        <a href="#pilot-request" class="nav-cta">
           Integrator Pilot &rarr;
         </a>
       </div>
@@ -459,13 +610,13 @@
     <div class="container">
       <div class="eyebrow-badge">
         <span class="status-dot"></span>
-        100% Offline • Local Home Assistant Voice AI
+        Private Integrator Pilot • 100% Offline Home Assistant Voice AI
       </div>
       <h1>Private, Offline Voice Control for Home Assistant Integrators</h1>
       <p class="subheadline">
-        Hearthmind Leo runs completely locally with zero cloud dependency, zero monthly fees, and built-in neural Voice ID for access control.
+        Hearthmind Leo runs completely locally with zero cloud dependency, zero cloud API fees, and local Voice ID access control (Private Beta).
       </p>
-      <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry" class="btn">
+      <a href="#pilot-request" class="btn">
         Request Private Pilot
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -479,7 +630,7 @@
     <div class="container">
       <div class="video-card">
         <div class="video-wrapper">
-          <video controls playsinline preload="metadata">
+          <video controls playsinline preload="metadata" poster="./demo-poster.jpg">
             <source src="./demo.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
@@ -489,7 +640,7 @@
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <strong>Live Verification:</strong> Live offline demo with Wi-Fi completely turned off.
+          <strong>Live Verification:</strong> Unedited offline test on Ubuntu with Wi-Fi completely turned off.
         </p>
       </div>
     </div>
@@ -512,7 +663,7 @@
             </svg>
           </div>
           <h3>100% Offline & Air-Gapped</h3>
-          <p>Runs completely locally on-premise with zero cloud APIs, zero data telemetry, and zero monthly fees.</p>
+          <p>Runs completely locally on-premise with zero cloud APIs, zero data telemetry, and zero per-token cloud costs.</p>
         </div>
 
         <!-- Capability 2 -->
@@ -523,7 +674,7 @@
             </svg>
           </div>
           <h3>Neural Voice ID Security</h3>
-          <p>Recognizes authorized speakers locally to enforce role-based access and restrict sensitive controls.</p>
+          <p>Designed to recognize authorized speakers locally for role-based smart-home access control.</p>
         </div>
 
         <!-- Capability 3 -->
@@ -545,7 +696,7 @@
             </svg>
           </div>
           <h3>Local RAG Vector Memory</h3>
-          <p>Remembers household context, user preferences, and past interactions locally without external databases.</p>
+          <p>Built for local household context and preference persistence without external cloud databases.</p>
         </div>
 
         <!-- Capability 5 -->
@@ -605,22 +756,63 @@
     </div>
   </section>
 
-  <!-- Section 4: Private Pilot CTA -->
+  <!-- Section 4: Pilot Request CTA & Form -->
   <section class="cta-section">
     <div class="container">
-      <div class="cta-box">
-        <h2>Deploy Hearthmind Leo On Your Test Rig</h2>
-        <div class="cta-copy">
-          <span>Home Assistant integrators are invited to test the Linux beta on their own hardware.</span>
-          <span>Experience low-latency, cloud-free local voice control with neural security.</span>
-          <span>Pilot program slots are currently open for qualified professional installers.</span>
-        </div>
-        <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry" class="btn">
-          Request Private Pilot
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </a>
+      <div class="cta-box" id="pilot-request">
+        <h2>Request Private Pilot Access</h2>
+        <p class="cta-copy">
+          Home Assistant integrators are invited to test the Linux beta on their own hardware. Experience low-latency, cloud-free local voice control with neural security.
+        </p>
+
+        <form class="pilot-form" id="pilot-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Your Name <span class="req">*</span></label>
+              <input type="text" id="name" name="name" class="form-input" required autocomplete="name" placeholder="Alex Turner">
+            </div>
+
+            <div class="form-group">
+              <label for="company">Company / Integrator Name <span class="req">*</span></label>
+              <input type="text" id="company" name="company" class="form-input" required autocomplete="organization" placeholder="Apex Smart Systems LLC">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Work Email <span class="req">*</span></label>
+              <input type="email" id="email" name="email" class="form-input" required autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="alex@apexsmart.com">
+            </div>
+
+            <div class="form-group">
+              <label for="market">Primary Market / State</label>
+              <input type="text" id="market" name="market" class="form-input" autocomplete="address-level1" placeholder="e.g. Texas, USA">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="deployments">Typical Home Assistant Deployments <span class="req">*</span></label>
+              <select id="deployments" name="deployments" class="form-select" required>
+                <option value="" disabled selected>Select deployment volume...</option>
+                <option value="1–5/yr">1–5 installations / year</option>
+                <option value="6–20/yr">6–20 installations / year</option>
+                <option value="20+/yr">20+ installations / year</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+              Request Pilot Access
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+          <div id="form-status"></div>
+
+          <p class="direct-email-note">
+            Prefer direct email? Contact us directly at <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry">hearthmindai@gmail.com</a>
+          </p>
+        </form>
       </div>
     </div>
   </section>
@@ -631,6 +823,131 @@
       <p>&copy; 2026 Hearthmind Leo. All rights reserved.</p>
     </div>
   </footer>
+
+  <script>
+    // Formspree endpoint for pilot inquiries
+    const FORM_ENDPOINT = "https://formspree.io/f/mbgobbba";
+
+    const form = document.getElementById("pilot-form");
+    const statusDiv = document.getElementById("form-status");
+
+    if (form) {
+      const emailField = form.elements['email'] || document.getElementById('email');
+      if (emailField) {
+        emailField.addEventListener('blur', function() {
+          this.value = this.value.trim();
+        });
+      }
+
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        if (statusDiv) statusDiv.innerHTML = "";
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const nameField = form.elements['name'] || document.getElementById('name');
+        const companyField = form.elements['company'] || document.getElementById('company');
+        const emailField = form.elements['email'] || document.getElementById('email');
+        const marketField = form.elements['market'] || document.getElementById('market');
+        const deploymentsField = form.elements['deployments'] || document.getElementById('deployments');
+
+        const nameVal = nameField ? nameField.value.trim() : "";
+        const companyVal = companyField ? companyField.value.trim() : "";
+        const emailVal = emailField ? emailField.value.trim() : "";
+        const marketVal = marketField ? marketField.value.trim() : "";
+        const deploymentsVal = deploymentsField ? deploymentsField.value : "";
+
+        if (emailField) {
+          emailField.value = emailVal;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailVal || !emailRegex.test(emailVal)) {
+          if (statusDiv) {
+            statusDiv.innerHTML = '<div class="alert-error">Please enter a valid work email address.</div>';
+          }
+          if (emailField) emailField.focus();
+          return;
+        }
+
+        const payload = {
+          name: nameVal,
+          company: companyVal,
+          email: emailVal,
+          _replyto: emailVal,
+          market: marketVal || "Not specified",
+          deployments: deploymentsVal,
+          _subject: "Hearthmind Leo - Private Pilot Inquiry (" + (companyVal || nameVal) + ")"
+        };
+
+        if (FORM_ENDPOINT && FORM_ENDPOINT.trim() !== "") {
+          try {
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = 'Submitting...';
+            }
+
+            const res = await fetch(FORM_ENDPOINT, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+              form.reset();
+              if (statusDiv) {
+                statusDiv.innerHTML = '<div class="alert-success">Thank you! Your pilot request has been received. Our engineering team will follow up within 1 business day.</div>';
+              }
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Request Pilot Access <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
+              }
+            } else {
+              const errData = await res.json().catch(() => ({}));
+              let errMsg = "Submission encountered an error.";
+              if (errData.error) {
+                errMsg = errData.error;
+              } else if (errData.errors && Array.isArray(errData.errors)) {
+                errMsg = errData.errors.map(function(err) {
+                  return err.message || (err.field ? err.field + ' error' : 'Error');
+                }).join(", ");
+              } else {
+                errMsg = "Endpoint returned status: " + res.status;
+              }
+              throw new Error(errMsg);
+            }
+          } catch (err) {
+            if (statusDiv) {
+              statusDiv.innerHTML = '<div class="alert-error">' + (err.message || 'Submission encountered an error.') + ' Please email us directly at <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry">hearthmindai@gmail.com</a>.</div>';
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = 'Request Pilot Access <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
+            }
+          }
+        } else {
+          // Pre-filled mailto fallback formatted cleanly
+          const subject = encodeURIComponent("Hearthmind Leo - Private Pilot Inquiry (" + (companyVal || nameVal) + ")");
+          const bodyText =
+            "Private Pilot Request Details:\n" +
+            "-----------------------------------\n" +
+            "Name: " + nameVal + "\n" +
+            "Company: " + companyVal + "\n" +
+            "Email: " + emailVal + "\n" +
+            "Primary Market / State: " + (marketVal || "Not specified") + "\n" +
+            "Annual HA Deployments: " + deploymentsVal + "\n\n" +
+            "Requesting Linux Private Beta access for on-premise evaluation.";
+
+          window.location.href = "mailto:hearthmindai@gmail.com?subject=" + subject + "&body=" + encodeURIComponent(bodyText);
+          if (statusDiv) {
+            statusDiv.innerHTML = '<div class="alert-info">Opening your email client to send your pilot inquiry. If it did not open automatically, please reach us directly at <a href="mailto:hearthmindai@gmail.com?subject=Hearthmind%20Leo%20-%20Private%20Pilot%20Inquiry">hearthmindai@gmail.com</a>.</div>';
+          }
+        }
+      });
+    }
+  </script>
 
 </body>
 </html>
